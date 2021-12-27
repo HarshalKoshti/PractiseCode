@@ -72,3 +72,64 @@ public ActionResult AddUser(NewUser usd)
                 smtp.Send(mm);
             }
         }
+
+
+pop up code and data fetch by javascript
+<script>
+    function AddTeacherPop() {
+        $.ajax({
+            url: "/Default/TeacherPopup",
+            type: "GET",
+            success: function (data) {
+                $("#mybody").html(data);
+                $("#myModal").modal('show');
+            }
+        })
+    }
+
+    $(document).ready(function () {
+        $("#popteacher").change(function () {
+            $.ajax({
+                url: "/Defult/AddStudent",
+                type: "GET",
+                data: { id: $("#TeacherId").val() },
+                dataType: "text",
+                success: function (data) {
+                    $("#TeacherId").empty();
+                    $("#TeacherId").add("<option value='" + item.popteacher);
+                }
+            })
+        })
+    });
+
+</script>
+                            
+**************************drop downlist  ************************************
+  <div class="form-group">
+            @Html.LabelFor(model => model.TeacherId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.TeacherId, ViewBag.teacher as List<SelectListItem>, "---------Select Teacher-------", new {@id= "teacherId", @class = "form-control" })
+                <button type="button" class="btn btn-info btn" onclick="AddTeacherPop()">Add Teacher</button>
+                @Html.ValidationMessageFor(model => model.TeacherId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+                            
+  *****************************controller************************************
+   [HttpPost]
+        public ActionResult  TeacherPopup(Teacher tp)
+        {
+           
+                dc.Teachers.Add(tp);
+                
+                dc.SaveChanges();
+                int teacid = tp.TeacherId;
+            if (teacid>0)
+            {
+                tp.TeacherId = teacid;
+                var teacherpop = tp.TeacherName;
+                ViewBag.teapop = teacherpop;
+            }
+
+            return View("AddStudent");
+                            
+        }                                                     
